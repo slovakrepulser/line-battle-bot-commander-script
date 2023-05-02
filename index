@@ -1,0 +1,50 @@
+--[[
+thomas!#1553
+v# - v1.00.03
+--]]
+
+local GameFolder = workspace:WaitForChild("Game")
+local MouseFilter = GameFolder:WaitForChild("MouseFilter")
+local Bots = MouseFilter:WaitForChild("Bots")
+local Enabled = false;
+
+local Settings = {
+    keybind = Enum.KeyCode.Zero,
+    defaultsize = Vector3.new(1,1,1),
+    bigsize = Vector3.new(5,5,5),
+}
+
+--Want to get your own keybind? Go to this website and find a keybind of your own!
+--https://create.roblox.com/docs/reference/engine/enums/KeyCode
+
+
+local function sizeBotHeads(botfolder, size)
+    print(botfolder)
+    if botfolder then
+        for i, v in pairs(botfolder:GetDescendants()) do
+            if v.Name == "Head" and v then
+                v.Size = size
+            end
+        end
+    end 
+end
+
+local UIs = game:GetService("UserInputService");
+
+UIs.InputBegan:Connect(function(input, busy)
+    if input.KeyCode == Settings.keybind and not busy then
+        for _, v in pairs(Bots:GetChildren()) do
+            if game.Players[v.Name] then
+                if game.Players[v.Name].Team ~= game.Players.LocalPlayer.Team then
+                    if Enabled == false then 
+                        Enabled = true
+                        sizeBotHeads(Bots[v.Name], Settings.bigsize)
+                    else
+                        Enabled = false
+                        sizeBotHeads(Bots[v.Name], Settings.defaultsize)
+                    end
+                end
+            end
+        end
+    end
+end)
